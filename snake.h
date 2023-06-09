@@ -10,12 +10,13 @@ struct Point {
 class SnakeGame {
 public:
     SnakeGame();
-    void Run();
+    void Run(int max_x, int max_y);
 
 private:
     void Initialize();
     void HandleInput();
     void Update();
+    bool IsCollision(int max_x, int max_y);
     bool IsGameOver();
 
     int width, height;
