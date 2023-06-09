@@ -1,13 +1,15 @@
 #include <iostream>
 #include <ncurses.h>
-#include <string>
 using namespace std;
 
 int main(){
     initscr();
+    cbreak();
+    keypad(stdscr,TRUE);
+    noecho();
 
-    int map_x = 30;
-    int map_y = 23;
+    int map_x = 22;
+    int map_y = 35;
 
     char map[map_x][map_y];
     for(int i=0; i<map_x; i++){
@@ -18,7 +20,7 @@ int main(){
         map[i][map_y-1] = '1';
     }
 
-    for(int i=0; i<23; i++){
+    for(int i=0; i<map_y; i++){
         map[0][i] = '1';
         map[map_x-1][i] = '1';
     }
@@ -31,7 +33,7 @@ int main(){
     for(int i=0; i<map_x; i++){
         for(int j=0; j<map_y; j++){
             const char temp = map[i][j];
-            mvprintw(i,j, "%c",map[i][j]);
+            mvprintw(1+i,1+j, "%c",map[i][j]);
         }
     }
 
