@@ -1,226 +1,93 @@
-#include <iostream>
-#include <vector>
+#include "snake.h"
 #include <ncurses.h>
-#include <cstdlib>
-#define SNAKE_H
 
-using namespace std;
+SnakeGame::SnakeGame() {
+    width = 20;
+    height = 20;
+    direction = KEY_RIGHT;
+    gameOver = false;
+    snake.push_back({width/2, height/2});
 
-struct snakepart{
-    int x,y;
-    snakepart(int col, int row);
-    snakepart();
-};
- 
-class snakeclass{
-    int points,del;
-    //indicates that the snake get food (it makes the snake longer)
-    bool get;
-    //indicates the current direction of the snake
-    char direction;
- 
-    int maxwidth;
-    int maxheight;
-    char partchar;
-    char oldalchar;
-    char etel;
-    snakepart food;
-    std::vector<snakepart> snake; //represent the snake
- 
-    void putfood();
-    bool collision();
-    void movesnake();
-    
-public:
-    snakeclass();
-    ~snakeclass();
-    void start();
-};
- 
-snakepart::snakepart(int col,int row)
-{
-    x=col;
-    y=row;
+    Initialize();
 }
- 
-snakepart::snakepart()
-{
-    x=0;
-    y=0;
-}
-snakeclass::snakeclass()
-{
+
+void SnakeGame::Initialize() {
     initscr();
-    nodelay(stdscr,true);           //if there wasn't any key pressed don't wait for keypress
-    keypad(stdscr,true);            //init the keyboard
-    noecho();                                   //don't write
-    curs_set(0);                            //cursor invisible
-    getmaxyx(stdscr,maxheight,maxwidth);
-    partchar='x';
-    oldalchar=(char)219;
-    etel='*';
-    food.x=0;
-    food.y=0;
-    for(int i=0;i<5;i++)
-        snake.push_back(snakepart(40+i,10));
-    points=0;
-    del=110000;
-    get=0;
-    direction='l';
-    srand(time(NULL));
-    putfood();
-    //make the game-board -- up-vertical
-    for(int i=0;i<maxwidth-1;i++)
-    {
-        move(0,i);
-        addch(oldalchar);
-    }
-    //left-horizontal
-    for(int i=0;i<maxheight-1;i++)
-    {
-        move(i,0);
-        addch(oldalchar);
-    }
-    //down-vertical
-    for(int i=0;i<maxwidth-1;i++)
-    {
-        move(maxheight-2,i);
-        addch(oldalchar);
-    }
-    //right-horizontal
-    for(int i=0;i<maxheight-1;i++)
-    {
-        move(i,maxwidth-2);
-        addch(oldalchar);
-    }
-    //draw the snake
-    for(int i=0;i<snake.size();i++)
-    {
-        move(snake[i].y,snake[i].x);
-        addch(partchar);
-    }
-    move(maxheight-1,0);
-    printw("%d",points);
-    move(food.y,food.x);
-    addch(etel);
-    refresh();
+    clear();
+    noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
+    curs_set(0);
 }
- 
-snakeclass::~snakeclass()
-{
-    nodelay(stdscr,false);          //turn back
-    getch();                                        //wait until a key is pressed
-    endwin();
-}
- 
-void snakeclass::putfood()
-{
-    while(1)
-    {
-        int tmpx=rand()%maxwidth+1;
-        int tmpy=rand()%maxheight+1;
-        for(int i=0;i<snake.size();i++)
-            if(snake[i].x==tmpx && snake[i].y==tmpy)
-                continue;
-        if(tmpx>=maxwidth-2 || tmpy>=maxheight-3)
-            continue;
-        food.x=tmpx;
-        food.y=tmpy;
-        break;
-    }
-    move(food.y,food.x);
-    addch(etel);
-    refresh();
-}
- 
-bool snakeclass::collision()
-{
-    if(snake[0].x==0 || snake[0].x==maxwidth-1 || snake[0].y==0 || snake[0].y==maxheight-2)
-        return true;
-    for(int i=2;i<snake.size();i++)
-    {
-        if(snake[0].x==snake[i].x && snake[0].y==snake[i].y)
-            return true;
-    }
-    //collision with the food
-    if(snake[0].x==food.x && snake[0].y==food.y)
-    {
-        get=true;
-        putfood();
-        points+=10;
-        move(maxheight-1,0);
-        printw("%d",points);
-        if((points%100)==0)
-            del-=10000;
-    }else
-        get=false;
-    return false;
-}
- 
- 
-void snakeclass::movesnake()
-{
-    //detect key
-    int tmp=getch();
-    switch(tmp)
-    {
-        case KEY_LEFT:
-            if(direction!='r')
-                direction='l';
-            break;
+
+void SnakeGame::HandleInput() {
+    int key = getch();
+    switch (key) {
         case KEY_UP:
-            if(direction!='d')
-                direction='u';
+            if (direction != KEY_DOWN)
+                direction = KEY_UP;
             break;
         case KEY_DOWN:
-            if(direction!='u')
-                direction='d';
+            if (direction != KEY_UP)
+                direction = KEY_DOWN;
+            break;
+        case KEY_LEFT:
+            if (direction != KEY_RIGHT)
+                direction = KEY_LEFT;
             break;
         case KEY_RIGHT:
-            if(direction!='l')
-                direction='r';
-            break;
-        case KEY_BACKSPACE:
-            direction='q';
+            if (direction != KEY_LEFT)
+                direction = KEY_RIGHT;
             break;
     }
-    //if there wasn't a collision with food
-    if(!get)
-    {
-        move(snake[snake.size()-1].y,snake[snake.size()-1].x);
-        printw(" ");
-        refresh();
-        snake.pop_back();
+}
+
+void SnakeGame::Update() {
+    int x = snake[0].x;
+    int y = snake[0].y;
+
+    switch (direction) {
+        case KEY_UP:
+            y--;
+            break;
+        case KEY_DOWN:
+            y++;
+            break;
+        case KEY_LEFT:
+            x--;
+            break;
+        case KEY_RIGHT:
+            x++;
+            break;
     }
-    if(direction=='l')
-    {
-        snake.insert(snake.begin(),snakepart(snake[0].x-1,snake[0].y));
-    }else if(direction=='r'){
-        snake.insert(snake.begin(),snakepart(snake[0].x+1,snake[0].y));
- 
-    }else if(direction=='u'){
-        snake.insert(snake.begin(),snakepart(snake[0].x,snake[0].y-1));
-    }else if(direction=='d'){
-        snake.insert(snake.begin(),snakepart(snake[0].x,snake[0].y+1));
-    }
-        move(snake[0].y,snake[0].x);
-        addch(partchar);
+
+    snake.insert(snake.begin(), {x, y});
+    mvprintw(y, x, "O");
+
+    mvprintw(snake.back().y, snake.back().x, " ");
+    snake.pop_back();
+
     refresh();
 }
- 
-void snakeclass::start()
-{
-    while(1)
-    {
-        if(collision())
-        {
-            move(12,36);
-            printw("game_over");
-            break;
-        }
-        movesnake();
-        if(direction=='q')              //exit
-            break;
-        //usleep(del);            //Linux delay
+
+bool SnakeGame::IsGameOver() {
+    return gameOver;
+}
+
+void SnakeGame::Run() {
+    while (!IsGameOver()) {
+        HandleInput();
+        Update();
+        napms(100);
     }
+
+    getch();
+    endwin();
+}
+
+int main() {
+    SnakeGame game;
+    game.Run();
+
+    return 0;
 }
