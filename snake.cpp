@@ -1,5 +1,7 @@
 #include "snake.h"
 #include <ncurses.h>
+#include <cstdlib>
+#include <ctime>
 
 SnakeGame::SnakeGame() {
     width = 20;
