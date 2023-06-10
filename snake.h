@@ -18,6 +18,8 @@ private:
     void Update();
     bool IsCollision(int max_x, int max_y);
     bool IsGameOver();
+    void GrowthItem();
+    void PositiveItem();
 
     int width, height;
     std::vector<Point> snake;
