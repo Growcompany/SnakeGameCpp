@@ -89,3 +89,31 @@ void SnakeGame::Run(int max_x, int max_y) {
     mvprintw(0,0, "GAME OVER!!"); //show game over massage
     endwin();
 }
+
+void SnakeGame::GrowthItem(){
+    GrowthItem_x = rand() % width;
+    GrowthItem_y = rand() % height;
+    mvprintw(GrowthItem_x, GrowthItem_y, "G");
+    GrowthItem = 0;
+    
+    if(y == GrowthItem_x && x == GrowthItem_y){
+        GrowthItem += 1;
+        GrowthItem_x = rand() % width;
+        GrowthItem_y = rand() % height;
+        mvprintw(GrowthItem_x, GrowthItem_y, "G");
+    }
+}
+
+void SnakeGame::PositiveItem(){
+    PositiveItem_x = rand() % width;
+    PositiveItem_y = rand() % height;
+    mvprintw(PositiveItem_x, PositiveItem_y, "P");
+    PositiveItem = 0;
+    
+    if(y == PositiveItem_x && x == PositiveItem_y){
+        PositiveItem += 1;
+        PositiveItem_x = rand() % width;
+        PositiveItem_y = rand() % height;
+        mvprintw(PositiveItem_x, PositiveItem_y, "P");
+    }
+}
