@@ -3,9 +3,6 @@
 #include "snake.cpp"
 using namespace std;
 
-#define MAP_X 23
-#define MAP_Y 30
-
 void initialize(){
     initscr(); // show scr
     WINDOW* win = newwin(1,1,0,0); // ? set win size
@@ -21,7 +18,7 @@ void set_map(char map[MAP_X][MAP_Y]){
 
     for(int i=0; i<MAP_X; i++){
         for(int j=0; j<MAP_Y; j++){
-            map[i][j] = '0';
+            map[i][j] = ' ';
         }
         map[i][0] = '1';
         map[i][MAP_Y-1] = '1';
@@ -54,12 +51,11 @@ void print_map(char map[MAP_X][MAP_Y]){
 
 int main(){
     initialize();
-    char map[MAP_X][MAP_Y];
     set_map(map);
     print_map(map);
     
     SnakeGame s;
-    s.Run(MAP_X, MAP_Y);
+    s.Run();
 
     getch();
     endwin(); // shut down

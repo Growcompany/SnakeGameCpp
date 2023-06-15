@@ -1,7 +1,10 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#define MAP_X 23 // set room row size
+#define MAP_Y 30 // set room column size
 #include <vector>
+extern char map[MAP_X][MAP_Y];
 
 struct Point {
     int x, y;
@@ -10,16 +13,15 @@ struct Point {
 class SnakeGame {
 public:
     SnakeGame();
-    void Run(int max_x, int max_y);
+    void Run();
 
 private:
     void Initialize();
     void HandleInput();
     void Update();
-    bool IsCollision(int max_x, int max_y);
+    bool IsCollision();
+    void GrowthItem(int *be_time, int *item_cnt);
     bool IsGameOver();
-    void GrowthItem();
-    void PositiveItem();
 
     int width, height;
     std::vector<Point> snake;
