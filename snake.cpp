@@ -78,6 +78,11 @@ void SnakeGame::Update() {
     snake.insert(snake.begin(), {x, y});
     mvprintw(y, x, "#"); // move snake
 
+    if(map[y-1][x-1] == '+'){
+        mvprintw(0, 0, "Get item!!!!!! %d %d", y-1, x-1);
+        snake.insert(snake.end(), {snake.back().x, snake.back().y});
+    }
+
     mvprintw(snake.back().y, snake.back().x, " "); // map recovery
     snake.pop_back();
 
@@ -90,9 +95,6 @@ bool SnakeGame::IsCollision() {
         gameOver = true;//restart game & endgame
         mvprintw(snake[0].x, snake.back().y, "1"); // restore wall
     }
-    else{
-        mvprintw(0, 0, "------------");
-    }
     //mvprintw(0, 15,"%d %d", snake[0].x, snake[0].y);
     return true;
 }
@@ -103,10 +105,11 @@ void SnakeGame::GrowthItem(int *be_time, int *item_cnt){
 
     if(now_time - *be_time/CLOCKS_PER_SEC > 5 && *item_cnt<3){ // 5 second create and lower than 3
         srand((unsigned int)time(NULL)); // set random now time
-        int item_x = 1 + rand() % (MAP_X-2);
-        int item_y = 1 + rand() % (MAP_Y-2);
+        int item_x = 2 + rand() % (MAP_X-2);
+        int item_y = 2 + rand() % (MAP_Y-2);
         mvprintw(item_x, item_y, "+");
         map[item_x-1][item_y-1] = '+';
+        mvprintw(0, 0, "create item!!!!!! %d %d", item_x-1, item_y-1);
         *item_cnt += 1;
     }
 
