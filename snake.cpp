@@ -108,7 +108,7 @@ void SnakeGame::GrowthItem(){
     int now_time = time(NULL);
 
     mvprintw(0, 0, "be_time %d now_time %d", before_time, now_time);
-    if((now_time - before_time) > 5 && item_cnt<3){ // 5 second create and lower than 3
+    if((now_time - before_time) > 5 && item_cnt<3){ // 5 second create and lower than 3 .
         srand((unsigned int)time(NULL)); // set random now time
         int item_x = 2 + rand() % (MAP_X-2);
         int item_y = 2 + rand() % (MAP_Y-2);
