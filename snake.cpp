@@ -10,6 +10,8 @@ SnakeGame::SnakeGame() {
     height = 20;
     direction = KEY_RIGHT;
     gameOver = false;
+    item_cnt = 0;
+    before_time = time(NULL);
     snake.push_back({width/2, height/2}); // set snake start position
     snake.push_back({width/2+1, height/2});
     snake.push_back({width/2+2, height/2});
@@ -81,6 +83,8 @@ void SnakeGame::Update() {
     if(map[y-1][x-1] == '+'){
         mvprintw(0, 0, "Get item!!!!!! %d %d", y-1, x-1);
         snake.insert(snake.end(), {snake.back().x, snake.back().y});
+        map[y-1][x-1] = '0';
+        item_cnt -= 1;
     }
 
     mvprintw(snake.back().y, snake.back().x, " "); // map recovery
@@ -100,20 +104,20 @@ bool SnakeGame::IsCollision() {
 }
 
 
-void SnakeGame::GrowthItem(int *be_time, int *item_cnt){
-    int now_time = clock();
+void SnakeGame::GrowthItem(){
+    int now_time = time(NULL);
 
-    if(now_time - *be_time/CLOCKS_PER_SEC > 5 && *item_cnt<3){ // 5 second create and lower than 3
+    mvprintw(0, 0, "be_time %d now_time %d", before_time, now_time);
+    if((now_time - before_time) > 5 && item_cnt<3){ // 5 second create and lower than 3
         srand((unsigned int)time(NULL)); // set random now time
         int item_x = 2 + rand() % (MAP_X-2);
         int item_y = 2 + rand() % (MAP_Y-2);
         mvprintw(item_x, item_y, "+");
         map[item_x-1][item_y-1] = '+';
         mvprintw(0, 0, "create item!!!!!! %d %d", item_x-1, item_y-1);
-        *item_cnt += 1;
+        item_cnt += 1;
+        before_time = now_time;
     }
-
-    *be_time = now_time;
 }
 
 
@@ -123,13 +127,11 @@ bool SnakeGame::IsGameOver() {
 }
 
 void SnakeGame::Run() {
-    int now_time = clock();
-    int item_cnt = 0;
     while (!IsGameOver()) {
         HandleInput();
         Update();
         IsCollision();
-        GrowthItem(&now_time, &item_cnt);
+        GrowthItem();
         napms(100);
     }
     mvprintw(0,0, "GAME OVER!!"); //show game over massage
