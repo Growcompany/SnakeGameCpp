@@ -20,12 +20,14 @@ private:
     void HandleInput();
     void Update();
     bool IsCollision();
-    void GrowthItem(int *be_time, int *item_cnt);
+    void GrowthItem();
     bool IsGameOver();
 
     int width, height;
     std::vector<Point> snake;
     int direction;
+    int item_cnt;
+    int before_time;
     bool gameOver;
 };
 
