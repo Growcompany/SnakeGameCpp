@@ -10,6 +10,10 @@ struct Point {
     int x, y;
 };
 
+struct items {
+    int x, y, time;
+};
+
 class SnakeGame {
 public:
     SnakeGame();
@@ -21,13 +25,16 @@ private:
     void Update();
     bool IsCollision();
     void GrowthItem();
+    void PoisonItem();
     bool IsGameOver();
 
     int width, height;
     std::vector<Point> snake;
+    std::vector<items> Growth_items;
+    std::vector<items> Poison_items;
     int direction;
-    int item_cnt;
-    int before_time;
+    int Growth_time;
+    int Poison_time;
     bool gameOver;
 };
 
