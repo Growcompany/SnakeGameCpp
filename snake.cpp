@@ -256,8 +256,8 @@ void SnakeGame::Update_scoreboard(){
     mvprintw(10, vertical_x, "Mission");
     mvprintw(11, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
     mvprintw(12, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
-    mvprintw(13, vertical_x, "- : 2 (%c)", Poison_cnt>3 ? 'V':' ');
-    mvprintw(14, vertical_x, "D : 5 (%c)", D_Growth_cnt>2 ? 'V':' ');
+    mvprintw(13, vertical_x, "- : 4 (%c)", Poison_cnt>3 ? 'V':' ');
+    mvprintw(14, vertical_x, "D : 3 (%c)", D_Growth_cnt>2 ? 'V':' ');
     mvprintw(15, vertical_x, "G : 1 ( )");
 
     if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 1){
