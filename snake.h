@@ -17,13 +17,12 @@ struct items {
 class SnakeGame {
 public:
     SnakeGame();
-    void Run();
+    bool Run();
 
 private:
     void Initialize();
     void HandleInput();
     void Update();
-    bool IsCollision();
     void GrowthItem();
     void PoisonItem();
     void D_GrowthItem();
@@ -42,7 +41,10 @@ private:
     int Growth_cnt; // how much eat growth iteams
     int Poison_cnt; // how much eat poison_items
     int D_Growth_cnt;
+    int stage;
+    bool nextstage;
     bool gameOver;
+
 };
 
 #endif

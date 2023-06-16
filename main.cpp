@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include "snake.cpp"
+#include "map.cpp"
 using namespace std;
 
 void initialize(){
@@ -14,48 +15,49 @@ void initialize(){
     nodelay(stdscr, TRUE);
 }
 
-void set_map(char map[MAP_X][MAP_Y]){
-
-    for(int i=0; i<MAP_X; i++){
-        for(int j=0; j<MAP_Y; j++){
-            map[i][j] = ' ';
-        }
-        map[i][0] = '1';
-        map[i][MAP_Y-1] = '1';
-    }
-
-    for(int i=0; i<MAP_Y; i++){
-        map[0][i] = '1';
-        map[MAP_X-1][i] = '1';
-    }
-
-    map[0][0] = '2';
-    map[MAP_X-1][0] = '2';
-    map[0][MAP_Y-1] = '2';
-    map[MAP_X-1][MAP_Y-1] = '2';
-}
-
-void print_map(char map[MAP_X][MAP_Y]){
-    for(int i=0; i<MAP_X; i++){
-            for(int j=0; j<MAP_Y; j++){
-                const char temp = map[i][j];
-                mvprintw(1+i,1+j, "%c",map[i][j]);
+int main(){
+    int stage = 1;
+    while(stage<5){
+        initialize();
+        set_map(stage);
+        print_map(map);
+        SnakeGame s;
+        if(s.Run()){ // go to next stage
+            print_result(true);
+            stage+=1;
+            bool gonext = false;
+            while(true){
+                int key = getch();
+                if(key == '\n'){ // \0 is enter butoon
+                    gonext = true;
+                    break;
+                }
+                else if (key == 27){ // 27 is Esc button
+                    break;
+                }
+            }
+            if(!gonext){ // if press esc end game
+                break;
             }
         }
-    
-    int vertical_x = COLS / 2; 
-    for(int y=0; y < LINES; ++y){ // draw middle line in map
-        mvaddch(y, vertical_x, '|');
+        else{ // gameover
+            print_result(false);
+            bool restart = false;
+            while(true){
+                int key = getch();
+                if(key == 'R' || key == 'r'){
+                    restart = true;
+                    break;
+                }
+                else if (key == 27){ // 27 is Esc button
+                    break;
+                }
+            }
+            if(!restart){ // if press esc not restart
+                break;
+            }
+        }
     }
-}
-
-int main(){
-    initialize();
-    set_map(map);
-    print_map(map);
-    
-    SnakeGame s;
-    s.Run();
 
     getch();
     endwin(); // shut down

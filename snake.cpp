@@ -10,10 +10,12 @@ SnakeGame::SnakeGame() {
     height = 20;
     direction = KEY_RIGHT;
     gameOver = false;
+    nextstage = false;
     Growth_time = time(NULL);
     Poison_time = time(NULL);
     Growth_cnt = 0;
     Poison_cnt = 0;
+    stage = 1;
     snake.push_back({width/2, width/2}); // set snake start position
     snake.push_back({width/2+1, height/2});
     snake.push_back({width/2+2, height/2});
@@ -85,6 +87,11 @@ void SnakeGame::Update() {
     snake.insert(snake.begin(), {x, y});
     mvprintw(y, x, "#"); // move snake
 
+    if(map[y-1][x-1] == '1'){ // snake collision wall
+        mvprintw(0, 0, "collision!!");
+        gameOver = true;//restart game & endgame
+    }
+
     if(map[y-1][x-1] == '+'){ //snake collision GrowthItem
         mvprintw(0, 0, "Get item!!!!!! %d %d", y-1, x-1);
         snake.insert(snake.end(), {snake.back().x, snake.back().y}); //insert plus tail
@@ -148,16 +155,6 @@ void SnakeGame::Update() {
     snake.pop_back();
 
     refresh();
-}
-
-bool SnakeGame::IsCollision() {
-    if(snake[0].x < 2 || snake[0].x > MAP_Y-1 || snake[0].y<2 || snake[0].y> MAP_X-1){
-        mvprintw(0, 0, "collision!!");
-        gameOver = true;//restart game & endgame
-        mvprintw(snake[0].x, snake.back().y, "1"); // restore wall
-    }
-    //mvprintw(0, 15,"%d %d", snake[0].x, snake[0].y);
-    return true;
 }
 
 void SnakeGame::GrowthItem(){
@@ -261,22 +258,20 @@ void SnakeGame::Update_scoreboard(){
 
     if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 1){
         // mvprintw(0,0, "GAME OVER!!");
-        gameOver = true;
-        endwin();
+        nextstage = true;
     }
 }
 
-void SnakeGame::Run() {
-    while (!IsGameOver()) {
+bool SnakeGame::Run() {
+    while (!IsGameOver() && !nextstage) {
         HandleInput();
         Update();
         Update_scoreboard();
-        IsCollision();
         GrowthItem();
         PoisonItem();
         D_GrowthItem();
         napms(180-snake.size()*10); // if snake size is longer speed up 2-(2)
     }
-    mvprintw(0,0, "GAME OVER!!"); //show game over massage
-    endwin();
+    return nextstage;
+    //mvprintw(0,0, "GAME OVER!!"); //show game over massage
 }
