@@ -124,12 +124,13 @@ void SnakeGame::Update() {
         map[snake.back().y-1][snake.back().x-1] = ' ';
         snake.pop_back(); //remove tail
 
-        Poison_cnt += 1;
-
-        if(snake.size()<3){ // if less than 3 size snake
+        if(snake.size()==3){ // if less than 3 size snake
             gameOver = true;
             return;
         }
+        
+        Poison_cnt += 1;
+
     }
 
     if(map[y-1][x-1] == 'D'){ // snake collision PoisionItem
