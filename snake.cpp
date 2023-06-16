@@ -128,7 +128,7 @@ void SnakeGame::Update() {
             gameOver = true;
             return;
         }
-        
+
         Poison_cnt += 1;
 
     }
@@ -150,11 +150,16 @@ void SnakeGame::Update() {
         D_Growth_cnt += 1;
     }
 
-    map[y-1][x-1] = '#'; // renew map property(head moved snake)
     mvprintw(snake.back().y, snake.back().x, " "); // map recovery
     map[snake.back().y-1][snake.back().x-1] = ' '; // renew map property(tail moved snake)
     snake.pop_back();
 
+    if(map[y-1][x-1] == '#'){ // snake collision snake
+        gameOver = true;
+        return;
+    }
+    map[y-1][x-1] = '#'; // renew map property(head moved snake)
+    
     refresh();
 }
 
@@ -196,7 +201,7 @@ void SnakeGame::PoisonItem(){
         }
     }
 
-    if((now_time - Poison_time) > 5 && (D_Growth_items.size()+Growth_items.size()+Poison_items.size())<3){ // 5 second create and lower than 3 .
+    if((now_time - Poison_time) > 7 && (D_Growth_items.size()+Growth_items.size()+Poison_items.size())<3){ // 5 second create and lower than 3 .
         srand((unsigned int)time(NULL)); // set random now time
         int item_x = 2 + rand() % (MAP_X-2);
         int item_y = 2 + rand() % (MAP_Y-2);
