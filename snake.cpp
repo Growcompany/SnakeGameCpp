@@ -10,8 +10,14 @@ SnakeGame::SnakeGame() {
     height = 20;
     direction = KEY_RIGHT;
     gameOver = false;
+    nextstage = false;
     Growth_time = time(NULL);
     Poison_time = time(NULL);
+    D_Growth_time = time(NULL);
+    Growth_cnt = 0;
+    Poison_cnt = 0;
+    D_Growth_cnt = 0;
+    score = 0;
     snake.push_back({width/2, width/2}); // set snake start position
     snake.push_back({width/2+1, height/2});
     snake.push_back({width/2+2, height/2});
@@ -83,6 +89,11 @@ void SnakeGame::Update() {
     snake.insert(snake.begin(), {x, y});
     mvprintw(y, x, "#"); // move snake
 
+    if(map[y-1][x-1] == '1'){ // snake collision wall
+        mvprintw(0, 0, "collision!!");
+        gameOver = true;//restart game & endgame
+    }
+
     if(map[y-1][x-1] == '+'){ //snake collision GrowthItem
         mvprintw(0, 0, "Get item!!!!!! %d %d", y-1, x-1);
         snake.insert(snake.end(), {snake.back().x, snake.back().y}); //insert plus tail
@@ -95,6 +106,9 @@ void SnakeGame::Update() {
             }
         }
         Growth_items.erase(Growth_items.begin()+erase_pos);
+
+        Growth_cnt += 1;
+        score += 1;
     }
 
     if(map[y-1][x-1] == '-'){ // snake collision PoisionItem
@@ -112,26 +126,47 @@ void SnakeGame::Update() {
         mvprintw(snake.back().y, snake.back().x, " "); //remove tail
         map[snake.back().y-1][snake.back().x-1] = ' ';
         snake.pop_back(); //remove tail
+
+        if(snake.size()==3){ // if less than 3 size snake
+            gameOver = true;
+            return;
+        }
+
+        Poison_cnt += 1;
+        score -= 1;
+
     }
 
-    map[y-1][x-1] = '#'; // renew map property(head moved snake)
+    if(map[y-1][x-1] == 'D'){ // snake collision PoisionItem
+        mvprintw(0, 0, "D_Growth_item; %d %d", y-1, x-1);
+        snake.insert(snake.end(), {snake.back().x, snake.back().y}); //insert plus tail 1
+        snake.insert(snake.end(), {snake.back().x, snake.back().y}); //insert plus tail 2
+        map[y-1][x-1] = ' '; // renew room property
+        int erase_pos;
+        for(int i=0; i<D_Growth_items.size(); i++){ // find item in Poison_items 
+            if(D_Growth_items[i].x == y && D_Growth_items[i].y == x){
+                erase_pos = i;
+                break;
+            }
+        }
+        D_Growth_items.erase(D_Growth_items.begin()+erase_pos);
+
+        D_Growth_cnt += 1;
+        score += 3;
+    }
+
     mvprintw(snake.back().y, snake.back().x, " "); // map recovery
     map[snake.back().y-1][snake.back().x-1] = ' '; // renew map property(tail moved snake)
     snake.pop_back();
 
+    if(map[y-1][x-1] == '#'){ // snake collision snake
+        gameOver = true;
+        return;
+    }
+    map[y-1][x-1] = '#'; // renew map property(head moved snake)
+    
     refresh();
 }
-
-bool SnakeGame::IsCollision() {
-    if(snake[0].x < 2 || snake[0].x > MAP_Y-1 || snake[0].y<2 || snake[0].y> MAP_X-1){
-        mvprintw(0, 0, "collision!!");
-        gameOver = true;//restart game & endgame
-        mvprintw(snake[0].x, snake.back().y, "1"); // restore wall
-    }
-    //mvprintw(0, 15,"%d %d", snake[0].x, snake[0].y);
-    return true;
-}
-
 
 void SnakeGame::GrowthItem(){
     int now_time = time(NULL);
@@ -145,7 +180,7 @@ void SnakeGame::GrowthItem(){
         }
     }
     
-    if((now_time - Growth_time) > 2 && (Growth_items.size()+Poison_items.size())<3){ // 2 second create and lower than 3 .
+    if((now_time - Growth_time) > 2 && (D_Growth_items.size()+Growth_items.size()+Poison_items.size())<3){ // 2 second create and lower than 3 .
         srand((unsigned int)time(NULL)); // set random now time
         int item_x = 2 + rand() % (MAP_X-2);
         int item_y = 2 + rand() % (MAP_Y-2);
@@ -171,7 +206,7 @@ void SnakeGame::PoisonItem(){
         }
     }
 
-    if((now_time - Poison_time) > 5 && (Growth_items.size()+Poison_items.size())<3){ // 5 second create and lower than 3 .
+    if((now_time - Poison_time) > 7 && (D_Growth_items.size()+Growth_items.size()+Poison_items.size())<3){ // 5 second create and lower than 3 .
         srand((unsigned int)time(NULL)); // set random now time
         int item_x = 2 + rand() % (MAP_X-2);
         int item_y = 2 + rand() % (MAP_Y-2);
@@ -186,19 +221,75 @@ void SnakeGame::PoisonItem(){
     }
 }
 
+void SnakeGame::D_GrowthItem(){
+    int now_time = time(NULL);
+
+    if(D_Growth_items.size()>0){ // created item in 10 second & destory
+        if(now_time - D_Growth_items[0].time>10){
+            map[D_Growth_items[0].x-1][D_Growth_items[0].y-1] = ' ';
+            mvprintw(D_Growth_items[0].x, D_Growth_items[0].y, " ");
+            D_Growth_items.erase(D_Growth_items.begin());
+        }
+    }
+    
+    if((now_time - D_Growth_time) > 7 && (D_Growth_items.size()+Growth_items.size()+Poison_items.size())<3){ // 7 second create and lower than 3 .
+        srand((unsigned int)time(NULL)); // set random now time
+        int item_x = 2 + rand() % (MAP_X-2);
+        int item_y = 2 + rand() % (MAP_Y-2);
+        if(map[item_x-1][item_y-1] != ' '){ // if snake or other item exist
+            return;
+        }
+        mvprintw(item_x, item_y, "D");
+        map[item_x-1][item_y-1] = 'D'; // renew map property to '+'
+        mvprintw(0, 0, "create D_G_item!!!!!! %d %d", item_x-1, item_y-1);
+        D_Growth_time = now_time;
+        D_Growth_items.push_back({item_x, item_y, now_time});
+    }
+}
+
 bool SnakeGame::IsGameOver() {
     return gameOver;
 }
 
-void SnakeGame::Run() {
+void SnakeGame::Update_scoreboard(){
+    int vertical_x = COLS / 2 + 2;
+
+    mvprintw(3, vertical_x, "Score  Board");
+    mvprintw(4, vertical_x, "B : (%ld) / (15)",snake.size());
+    mvprintw(5, vertical_x, "+ : (%d)",Growth_cnt);
+    mvprintw(6, vertical_x, "- : (%d)",Poison_cnt);
+    mvprintw(7, vertical_x, "D : (%d)",D_Growth_cnt);
+    mvprintw(8, vertical_x, "G : (Gate Usage Count)");
+
+    mvprintw(10, vertical_x, "Score : (%d)", score);
+
+    mvprintw(12, vertical_x, "Mission");
+    mvprintw(13, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
+    mvprintw(14, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
+    mvprintw(15, vertical_x, "- : 4 (%c)", Poison_cnt>3 ? 'V':' ');
+    mvprintw(16, vertical_x, "D : 3 (%c)", D_Growth_cnt>2 ? 'V':' ');
+    mvprintw(17, vertical_x, "G : 1 ( )");
+
+    if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 3 && D_Growth_cnt > 2){
+        // mvprintw(0,0, "GAME OVER!!");
+        nextstage = true;
+    }
+}
+
+bool SnakeGame::Run(int stage, int *all_score) {
     while (!IsGameOver()) {
+        if(nextstage){
+            break;
+        }
         HandleInput();
         Update();
-        IsCollision();
+        Update_scoreboard();
         GrowthItem();
         PoisonItem();
-        napms(100);
+        D_GrowthItem();
+        napms(180-snake.size()*10); // if snake size is longer speed up 2-(2)
     }
-    mvprintw(0,0, "GAME OVER!!"); //show game over massage
-    endwin();
+    *all_score += score;
+    return nextstage;
+    //mvprintw(0,0, "GAME OVER!!"); //show game over massage
 }
