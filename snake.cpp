@@ -12,6 +12,8 @@ SnakeGame::SnakeGame() {
     gameOver = false;
     Growth_time = time(NULL);
     Poison_time = time(NULL);
+    Growth_cnt = 0;
+    Poison_cnt = 0;
     snake.push_back({width/2, width/2}); // set snake start position
     snake.push_back({width/2+1, height/2});
     snake.push_back({width/2+2, height/2});
@@ -95,6 +97,8 @@ void SnakeGame::Update() {
             }
         }
         Growth_items.erase(Growth_items.begin()+erase_pos);
+
+        Growth_cnt += 1;
     }
 
     if(map[y-1][x-1] == '-'){ // snake collision PoisionItem
@@ -112,6 +116,13 @@ void SnakeGame::Update() {
         mvprintw(snake.back().y, snake.back().x, " "); //remove tail
         map[snake.back().y-1][snake.back().x-1] = ' ';
         snake.pop_back(); //remove tail
+
+        Poison_cnt += 1;
+
+        if(snake.size()<3){ // if less than 3 size snake
+            gameOver = true;
+            return;
+        }
     }
 
     map[y-1][x-1] = '#'; // renew map property(head moved snake)
@@ -131,7 +142,6 @@ bool SnakeGame::IsCollision() {
     //mvprintw(0, 15,"%d %d", snake[0].x, snake[0].y);
     return true;
 }
-
 
 void SnakeGame::GrowthItem(){
     int now_time = time(NULL);
@@ -190,10 +200,33 @@ bool SnakeGame::IsGameOver() {
     return gameOver;
 }
 
+void SnakeGame::Update_scoreboard(){
+    int vertical_x = COLS / 2 + 2;
+
+    mvprintw(2, vertical_x, "Score  Board");
+    mvprintw(3, vertical_x, "B : (%ld) / (15)",snake.size());
+    mvprintw(4, vertical_x, "+ : (%d)",Growth_cnt);
+    mvprintw(5, vertical_x, "- : (%d)",Poison_cnt);
+    mvprintw(6, vertical_x, "G : (Gate Usage Count)");
+
+    mvprintw(9, vertical_x, "Mission");
+    mvprintw(10, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
+    mvprintw(11, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
+    mvprintw(12, vertical_x, "- : 2 (%c)", Poison_cnt>1 ? 'V':' ');
+    mvprintw(13, vertical_x, "G : 1 ( )");
+
+    if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 1){
+        // mvprintw(0,0, "GAME OVER!!");
+        gameOver = true;
+        endwin();
+    }
+}
+
 void SnakeGame::Run() {
     while (!IsGameOver()) {
         HandleInput();
         Update();
+        Update_scoreboard();
         IsCollision();
         GrowthItem();
         PoisonItem();

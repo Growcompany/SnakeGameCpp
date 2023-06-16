@@ -27,6 +27,7 @@ private:
     void GrowthItem();
     void PoisonItem();
     bool IsGameOver();
+    void Update_scoreboard();
 
     int width, height;
     std::vector<Point> snake;
@@ -35,6 +36,8 @@ private:
     int direction;
     int Growth_time;
     int Poison_time;
+    int Growth_cnt; // how much eat growth iteams
+    int Poison_cnt; // how much eat poison_items
     bool gameOver;
 };
 
