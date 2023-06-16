@@ -21,7 +21,7 @@ public:
 
 private:
     void Initialize();
-    void HandleInput();
+    bool HandleInput();
     void Update();
     void GrowthItem();
     void PoisonItem();

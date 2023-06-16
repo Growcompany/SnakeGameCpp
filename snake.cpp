@@ -21,17 +21,16 @@ SnakeGame::SnakeGame() {
     snake.push_back({width/2, width/2}); // set snake start position
     snake.push_back({width/2+1, height/2});
     snake.push_back({width/2+2, height/2});
-    map[width/2-1][width/2-1] = '#';
-    map[width/2][width/2-1] = '#';
-    map[width/2+1][width/2-1] = '#';
 }
 
-void SnakeGame::HandleInput() {
+bool SnakeGame::HandleInput() {
     int key = getch();
     switch (key) {
         case KEY_UP:
             if (direction == KEY_DOWN){
                 gameOver = true;
+                mvprintw(0, 0, "Don't go opposite - Gameover");
+                return false;
             }
             else{
                 direction = KEY_UP;
@@ -40,6 +39,8 @@ void SnakeGame::HandleInput() {
         case KEY_DOWN:
             if (direction == KEY_UP){
                 gameOver = true;
+                mvprintw(0, 0, "Don't go opposite - Gameover");
+                return false;
             }
             else{
                 direction = KEY_DOWN;
@@ -48,6 +49,8 @@ void SnakeGame::HandleInput() {
         case KEY_LEFT:
             if (direction == KEY_RIGHT){
                 gameOver = true;
+                mvprintw(0, 0, "Don't go opposite - Gameover");
+                return false;
             }
             else{
                 direction = KEY_LEFT;
@@ -56,12 +59,15 @@ void SnakeGame::HandleInput() {
         case KEY_RIGHT:
             if (direction == KEY_LEFT){
                 gameOver = true;
+                mvprintw(0, 0, "Don't go opposite - Gameover");
+                return false;
             }
             else{
                 direction = KEY_RIGHT;
             }
             break;
     }
+    return true;
 }
 
 void SnakeGame::Update() {
@@ -90,7 +96,7 @@ void SnakeGame::Update() {
     mvprintw(y, x, "#"); // move snake
 
     if(map[y-1][x-1] == '1'){ // snake collision wall
-        mvprintw(0, 0, "collision!!");
+        mvprintw(0, 0, "collision!! wall");
         gameOver = true;//restart game & endgame
     }
 
@@ -129,6 +135,7 @@ void SnakeGame::Update() {
 
         if(snake.size()==3){ // if less than 3 size snake
             gameOver = true;
+            mvprintw(0,0, "size is to small_GAME OVER!!");
             return;
         }
 
@@ -161,6 +168,7 @@ void SnakeGame::Update() {
 
     if(map[y-1][x-1] == '#'){ // snake collision snake
         gameOver = true;
+        mvprintw(0,0, "self die_GAME OVER!! ");
         return;
     }
     map[y-1][x-1] = '#'; // renew map property(head moved snake)
@@ -171,7 +179,7 @@ void SnakeGame::Update() {
 void SnakeGame::GrowthItem(){
     int now_time = time(NULL);
 
-    mvprintw(0, 0, "b_time %d n_time %d G_item:%ld P_item:%ld", Growth_time, now_time, Growth_items.size(), Poison_items.size());
+    //mvprintw(0, 0, "b_time %d n_time %d G_item:%ld P_item:%ld", Growth_time, now_time, Growth_items.size(), Poison_items.size());
     if(Growth_items.size()>0){ // created item in 10 second & destory
         if(now_time - Growth_items[0].time>10){
             map[Growth_items[0].x-1][Growth_items[0].y-1] = ' ';
@@ -266,12 +274,11 @@ void SnakeGame::Update_scoreboard(){
     mvprintw(12, vertical_x, "Mission");
     mvprintw(13, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
     mvprintw(14, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
-    mvprintw(15, vertical_x, "- : 4 (%c)", Poison_cnt>3 ? 'V':' ');
-    mvprintw(16, vertical_x, "D : 3 (%c)", D_Growth_cnt>2 ? 'V':' ');
+    mvprintw(15, vertical_x, "- : 2 (%c)", Poison_cnt>1 ? 'V':' ');
+    mvprintw(16, vertical_x, "D : 2 (%c)", D_Growth_cnt>1 ? 'V':' ');
     mvprintw(17, vertical_x, "G : 1 ( )");
 
-    if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 3 && D_Growth_cnt > 2){
-        // mvprintw(0,0, "GAME OVER!!");
+    if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 1 && D_Growth_cnt > 1){
         nextstage = true;
     }
 }
@@ -281,7 +288,7 @@ bool SnakeGame::Run(int stage, int *all_score) {
         if(nextstage){
             break;
         }
-        HandleInput();
+        if(!HandleInput()){break;} // if go opposite gameover
         Update();
         Update_scoreboard();
         GrowthItem();

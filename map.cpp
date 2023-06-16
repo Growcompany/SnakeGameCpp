@@ -63,7 +63,7 @@ void print_map(char map[MAP_X][MAP_Y]){
                 const char temp = map[i][j];
                 mvprintw(1+i,1+j, "%c",map[i][j]);
             }
-        }
+    }
     
     int vertical_x = COLS / 2; 
     for(int y=0; y < LINES; ++y){ // draw middle line in map
