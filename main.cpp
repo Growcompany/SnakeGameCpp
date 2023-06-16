@@ -47,6 +47,25 @@ void print_map(char map[MAP_X][MAP_Y]){
     for(int y=0; y < LINES; ++y){ // draw middle line in map
         mvaddch(y, vertical_x, '|');
     }
+    
+    mvprintw(2, vertical_x + 2, "Score  Board");
+    mvprintw(3, vertical_x + 2, "B : (Current Length) / (Max Length)");
+    mvprintw(4, vertical_x + 2, "+ : (Gained Growth Items)");
+    mvprintw(5, vertical_x + 2, "- : (Gained Poison Items)");
+    mvprintw(6, vertical_x + 2, "G : (Gate Usage Count)");
+
+    mvprintw(9, vertical_x + 2, "Mission");
+    mvprintw(10, vertical_x + 2, "B : 10 ()");
+    mvprintw(11, vertical_x + 2, "+ : 5 (%d)", Gitem_cnt);
+    mvprintw(12, vertical_x + 2, "- : 2 (%d)", Pitem_cnt);
+    mvprintw(13, vertical_x + 2, "G : 1 ()");
+
+    if(Gitem_cnt >= 5 && Pitem_cnt >=2){
+        // mvprintw(0,0, "GAME OVER!!");
+        endwin();
+        // gameOver = true;
+    }
+
 }
 
 int main(){
