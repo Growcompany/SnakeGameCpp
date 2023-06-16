@@ -263,7 +263,10 @@ void SnakeGame::Update_scoreboard(){
 }
 
 bool SnakeGame::Run() {
-    while (!IsGameOver() && !nextstage) {
+    while (!IsGameOver()) {
+        if(nextstage){
+            break;
+        }
         HandleInput();
         Update();
         Update_scoreboard();
