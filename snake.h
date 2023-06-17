@@ -40,6 +40,7 @@ private:
     std::vector<items> D_Growth_items;
     std::vector<items> Gate_items;
     std::map<std::pair<int,int>,int> walls;
+    int start_time;
     int direction;
     int Growth_time;
     int Poison_time;

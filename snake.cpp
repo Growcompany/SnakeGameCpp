@@ -19,6 +19,7 @@ SnakeGame::SnakeGame() {
     Poison_time = time(NULL);
     D_Growth_time = time(NULL);
     Gate_time = time(NULL);
+    start_time = time(NULL);
     Growth_cnt = 0;
     Poison_cnt = 0;
     D_Growth_cnt = 0;
@@ -331,7 +332,7 @@ void SnakeGame::Update() {
 
     if(room[y-1][x-1] == '#'){ // snake collision snake
         gameOver = true;
-        mvprintw(0,0, "self die_GAME OVER!! ");
+        mvprintw(0,0, "Message: self die_GAME OVER!!!!");
         return;
     }
     room[y-1][x-1] = '#'; // renew room property(head moved snake)
@@ -527,21 +528,23 @@ bool SnakeGame::IsGameOver() {
 void SnakeGame::Update_scoreboard(){
     int vertical_x = COLS / 2 + 2;
 
-    mvprintw(3, vertical_x, "Score  Board");
-    mvprintw(4, vertical_x, "B : (%ld) / (15)",snake.size());
-    mvprintw(5, vertical_x, "+ : (%d)",Growth_cnt);
-    mvprintw(6, vertical_x, "- : (%d)",Poison_cnt);
-    mvprintw(7, vertical_x, "D : (%d)",D_Growth_cnt);
-    mvprintw(8, vertical_x, "G : (%d)", gate_cnt);
+    int now_time = time(NULL);
+    mvprintw(3, vertical_x, "time: %ds, Every 10s - New wall",now_time-start_time);
+    mvprintw(5, vertical_x, "Score  Board");
+    mvprintw(6, vertical_x, "B : (%ld) / (15)",snake.size());
+    mvprintw(7, vertical_x, "+ : (%d)",Growth_cnt);
+    mvprintw(8, vertical_x, "- : (%d)",Poison_cnt);
+    mvprintw(9, vertical_x, "D : (%d)",D_Growth_cnt);
+    mvprintw(10, vertical_x, "G : (%d)", gate_cnt);
 
-    mvprintw(10, vertical_x, "Score : (%d)", score);
+    mvprintw(12, vertical_x, "Score : (%d)", score);
 
-    mvprintw(12, vertical_x, "Mission");
-    mvprintw(13, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
-    mvprintw(14, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
-    mvprintw(15, vertical_x, "- : 2 (%c)", Poison_cnt>1 ? 'V':' ');
-    mvprintw(16, vertical_x, "D : 2 (%c)", D_Growth_cnt>1 ? 'V':' ');
-    mvprintw(17, vertical_x, "G : 1 (%c)", gate_cnt>0 ? 'V':' ');
+    mvprintw(14, vertical_x, "Mission");
+    mvprintw(15, vertical_x, "B : 10 (%c)", snake.size()>9 ? 'V':' ');
+    mvprintw(16, vertical_x, "+ : 5 (%c)", Growth_cnt>4 ? 'V':' ');
+    mvprintw(17, vertical_x, "- : 2 (%c)", Poison_cnt>1 ? 'V':' ');
+    mvprintw(18, vertical_x, "D : 2 (%c)", D_Growth_cnt>1 ? 'V':' ');
+    mvprintw(19, vertical_x, "G : 1 (%c)", gate_cnt>0 ? 'V':' ');
 
     if(snake.size() > 9 && Growth_cnt > 4 && Poison_cnt > 1 && D_Growth_cnt > 1 && gate_cnt > 0){
         nextstage = true;
@@ -576,7 +579,7 @@ void SnakeGame::new_wall() {
     int now_time = time(NULL);
 
     
-    if((now_time - new_wall_time) > 1 && new_wall_X < ROOM_X){
+    if((now_time - new_wall_time) > 9 && new_wall_X < ROOM_X){
         if(room[new_wall_X-1][new_wall_Y-1] == '1'){ // if snake or other item exist
             new_wall_X += 2;
             return;
@@ -608,7 +611,7 @@ bool SnakeGame::Run(int stage, int *all_score) {
         D_GrowthItem();
         GateItem();
         new_wall();
-        napms(180-snake.size()*10); // if snake size is longer speed up 2-(2)
+        napms(240-snake.size()*10); // if snake size is longer speed up 2-(2)
     }
     *all_score += score;
     return nextstage;

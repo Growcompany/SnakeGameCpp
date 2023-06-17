@@ -38,7 +38,7 @@ int main(){
                 all_score += 200;
                 break;
             }
-            print_result(true, all_score);
+            print_result(true, all_score, stage);
             stage+=1;
             bool gonext = false;
             while(true){
@@ -56,7 +56,7 @@ int main(){
             }
         }
         else{ // gameover
-            print_result(false, all_score);
+            print_result(false, all_score, stage);
             bool restart = false;
             while(true){
                 int key = getch();

@@ -31,15 +31,23 @@ void set_room(int stage){
             for(int i=10; i<15; i++){
                 room[ROOM_X/4][i] = '1'; 
             }
+            for(int i=10; i<15; i++){
+                room[i][ROOM_X/4] = '1'; 
+            }
             break;
         case 3:
             mvprintw(1, COLS / 2 + 2, "Stage 3");
-            for(int i=10; i<15; i++){
-                room[ROOM_X/4][i] = '1'; 
-            }
             for(int i=4; i<8; i++){
                 room[i][ROOM_Y/5] = '1'; 
             }
+            for(int i=4; i<8; i++){
+                room[i][ROOM_Y/5*4-1] = '1'; 
+            }
+            for(int i=10; i<20; i++){
+                room[ROOM_X/4*3 + 1][i] = '1'; 
+            }
+            room[ROOM_X/4*3][10] = '1';
+            room[ROOM_X/4*3][19] = '1';
             break;
         case 4:
             mvprintw(1, COLS / 2 + 2, "Stage 4");
@@ -52,11 +60,11 @@ void set_room(int stage){
             for(int i=22; i<26; i++){
                 room[19][i] = '1'; 
             }
-            for(int i=12; i<15; i++){
+            for(int i=12; i<16; i++){
                 room[i][9] = '1'; 
             }
             for(int i=9; i<24; i++){
-                room[15][i] = '1'; 
+                room[16][i] = '1'; 
             }
 
             break;
@@ -78,7 +86,7 @@ void print_room(char room[ROOM_X][ROOM_Y]){
     }
 }
 
-void print_result(bool nextstage, int all_score){
+void print_result(bool nextstage, int all_score, int stage){
     int height = 8;
     int width = 26;
     int x = (LINES - height) / 2;
@@ -90,14 +98,15 @@ void print_result(bool nextstage, int all_score){
     if(nextstage){
         mvwprintw(win, height / 2-3, width/2-6, "<next stage>");
         mvwprintw(win, height / 2, 1, "Enter: next stage");
+        mvwprintw(win, height / 2+2, 1, "Score : (%d)-Bonus(%d)", all_score, stage*50);
     }
     else{
         mvwprintw(win, height / 2-3, width/2-5, "<GameOver>");
         mvwprintw(win, height / 2, 1, "R: game restart");
+        mvwprintw(win, height / 2+2, 1, "Score : (%d)", all_score);
     }
     mvwprintw(win, height / 2-2, 1, "Press the key...");
     mvwprintw(win, height / 2+1, 1, "ESC: close game");
-    mvwprintw(win, height / 2+2, 1, "Score : (%d)", all_score);
 
     refresh();
     wrefresh(win);
