@@ -52,6 +52,13 @@ void set_room(int stage){
             for(int i=22; i<26; i++){
                 room[19][i] = '1'; 
             }
+            for(int i=12; i<15; i++){
+                room[i][9] = '1'; 
+            }
+            for(int i=9; i<24; i++){
+                room[15][i] = '1'; 
+            }
+
             break;
     }
 

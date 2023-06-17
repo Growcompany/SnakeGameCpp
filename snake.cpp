@@ -142,7 +142,7 @@ void SnakeGame::Update() {
         room[snake.back().y-1][snake.back().x-1] = ' ';
         snake.pop_back(); //remove tail
 
-        if(snake.size()==3){ // if less than 3 size snake
+        if(snake.size()<3){ // if less than 3 size snake
             gameOver = true;
             mvprintw(0,0, "size is to small_GAME OVER!!");
             return;
@@ -560,14 +560,6 @@ void SnakeGame::input_wall(){ //update wall vector
     for(int i=1; i<ROOM_X-1; i++){ //input inside_wall
             for(int j=1; j<ROOM_Y-1; j++){
                 if(room[i][j] == '1'){
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
-                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
                     walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
                 }
             }
