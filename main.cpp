@@ -7,7 +7,7 @@ using namespace std;
 void initialize(){
     initscr(); // show scr
     WINDOW* win = newwin(1,1,0,0); // ? set win size
-    clear(); //clear map
+    clear(); //clear room
     cbreak(); 
     keypad(stdscr, TRUE);
     noecho();
@@ -20,8 +20,8 @@ int main(){
     int all_score = 0;
     while(stage<5){
         initialize();
-        set_map(stage);
-        print_map(map);
+        set_room(stage);
+        print_room(room);
         SnakeGame s;
         if(s.Run(stage, &all_score)){ // go to next stage
             switch(stage){

@@ -2,71 +2,78 @@
 #include <ncurses.h>
 #include "snake.h"
 
-void set_map(int stage){
+void set_room(int stage){
 
-    for(int i=0; i<MAP_X; i++){
-        for(int j=0; j<MAP_Y; j++){
-            map[i][j] = ' ';
+    for(int i=0; i<ROOM_X; i++){
+        for(int j=0; j<ROOM_Y; j++){
+            room[i][j] = ' ';
         }
-        map[i][0] = '1';
-        map[i][MAP_Y-1] = '1';
+        room[i][0] = '1';
+        room[i][ROOM_Y-1] = '1';
     }
 
-    for(int i=0; i<MAP_Y; i++){
-        map[0][i] = '1';
-        map[MAP_X-1][i] = '1';
+    for(int i=0; i<ROOM_Y; i++){
+        room[0][i] = '1';
+        room[ROOM_X-1][i] = '1';
     }
 
-    map[0][0] = '2';
-    map[MAP_X-1][0] = '2';
-    map[0][MAP_Y-1] = '2';
-    map[MAP_X-1][MAP_Y-1] = '2';
+    room[0][0] = '2';
+    room[ROOM_X-1][0] = '2';
+    room[0][ROOM_Y-1] = '2';
+    room[ROOM_X-1][ROOM_Y-1] = '2';
 
     switch(stage){
-        case 1: //set stage1 map
-            mvprintw(2, COLS / 2 + 2, "Stage 1");
+        case 1: //set stage1 room
+            mvprintw(1, COLS / 2 + 2, "Stage 1");
             break;
-        case 2: //set stage2 map
-            mvprintw(2, COLS / 2 + 2, "Stage 2");
+        case 2: //set stage2 room
+            mvprintw(1, COLS / 2 + 2, "Stage 2");
             for(int i=10; i<15; i++){
-                map[MAP_X/4][i] = '1'; 
+                room[ROOM_X/4][i] = '1'; 
             }
             break;
         case 3:
-            mvprintw(2, COLS / 2 + 2, "Stage 3");
+            mvprintw(1, COLS / 2 + 2, "Stage 3");
             for(int i=10; i<15; i++){
-                map[MAP_X/4][i] = '1'; 
+                room[ROOM_X/4][i] = '1'; 
             }
             for(int i=4; i<8; i++){
-                map[i][MAP_Y/5] = '1'; 
+                room[i][ROOM_Y/5] = '1'; 
             }
             break;
         case 4:
-            mvprintw(2, COLS / 2 + 2, "Stage 4");
+            mvprintw(1, COLS / 2 + 2, "Stage 4");
             for(int i=10; i<15; i++){
-                map[MAP_X/4][i] = '1'; 
+                room[ROOM_X/4][i] = '1'; 
             }
             for(int i=4; i<8; i++){
-                map[i][MAP_Y/5] = '1'; 
+                room[i][ROOM_Y/5] = '1'; 
             }
             for(int i=22; i<26; i++){
-                map[19][i] = '1'; 
+                room[19][i] = '1'; 
             }
+            for(int i=12; i<15; i++){
+                room[i][9] = '1'; 
+            }
+            for(int i=9; i<24; i++){
+                room[15][i] = '1'; 
+            }
+
             break;
     }
 
 }
 
-void print_map(char map[MAP_X][MAP_Y]){
-    for(int i=0; i<MAP_X; i++){
-            for(int j=0; j<MAP_Y; j++){
-                const char temp = map[i][j];
-                mvprintw(1+i,1+j, "%c",map[i][j]);
+void print_room(char room[ROOM_X][ROOM_Y]){
+    for(int i=0; i<ROOM_X; i++){
+            for(int j=0; j<ROOM_Y; j++){
+                const char temp = room[i][j];
+                mvprintw(1+i,1+j, "%c",room[i][j]);
             }
     }
     
     int vertical_x = COLS / 2; 
-    for(int y=0; y < LINES; ++y){ // draw middle line in map
+    for(int y=0; y < LINES; ++y){ // draw middle line in room
         mvaddch(y, vertical_x, '|');
     }
 }
