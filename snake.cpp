@@ -212,96 +212,96 @@ void SnakeGame::Update() {
                     case 4: // out inside wall
                         switch(direction){
                             case KEY_DOWN:
-                                if(room[y+1][x] != '1'){ // maintain dir
+                                if(room[y][x-1] != '1'){ // maintain dir
                                     y++;
                                     out_gate_last_y = -1;
                                     break;
                                 }
-                                if(room[y][x-1] != '1'){ // turn clock
+                                if(room[y-1][x-2] != '1'){ // turn clock
                                     direction = KEY_LEFT; 
                                     x--;
                                     out_gate_last_x = 1;
                                     break;
                                 }
-                                if(room[y][x+1] != '1'){ // turn o'clock
+                                if(room[y-1][x] != '1'){ // turn o'clock
                                     direction = KEY_RIGHT; 
                                     x++;
                                     out_gate_last_x = -1;
                                     break;
                                 }
-                                if(room[y-1][x+1] != '1'){ // turn back
+                                if(room[y-2][x-1] != '1'){ // turn back
                                     direction = KEY_UP; 
                                     y--;
                                     out_gate_last_y = 1;
                                     break;
                                 }
                             case KEY_UP:
-                                if(room[y-1][x] != '1'){ // maintain dir
+                                if(room[y-2][x-1] != '1'){ // maintain dir
                                     y--;
                                     out_gate_last_y = 1;
                                     break;
                                 }
-                                if(room[y][x+1] != '1'){ // turn clock
+                                if(room[y-1][x] != '1'){ // turn clock
                                     direction = KEY_RIGHT; 
                                     x++;
                                     out_gate_last_x = -1;
                                     break;
                                 }
-                                if(room[y][x-1] != '1'){ // turn o'clock
+                                if(room[y-1][x-2] != '1'){ // turn o'clock
                                     direction = KEY_LEFT; 
                                     x--;
                                     out_gate_last_x = 1;
                                     break;
                                 }
-                                if(room[y+1][x] != '1'){ // turn back
+                                if(room[y][x-1] != '1'){ // turn back
                                     direction = KEY_DOWN; 
                                     y++;
                                     out_gate_last_y = -1;
                                     break;
                                 }
                             case KEY_RIGHT:
-                                if(room[y][x+1] != '1'){ // maintain dir
+                                if(room[y-1][x] != '1'){ // maintain dir
                                     x++;
                                     out_gate_last_x = -1;
                                     break;
                                 }
-                                if(room[y+1][x] != '1'){ // turn clock
+                                if(room[y][x-1] != '1'){ // turn clock
                                     direction = KEY_DOWN; 
                                     y++;
                                     out_gate_last_y = -1;
                                     break;
                                 }
-                                if(room[y-1][x] != '1'){ // turn o'clock
+                                if(room[y-2][x-1] != '1'){ // turn o'clock
                                     direction = KEY_UP; 
                                     y--;
                                     out_gate_last_y = 1;
                                     break;
                                 }
-                                if(room[y][x-1] != '1'){ // turn back
+                                if(room[y-1][x-2] != '1'){ // turn back
                                     direction = KEY_LEFT; 
                                     x--;
                                     out_gate_last_x = 1;
                                     break;
                                 }
                             case KEY_LEFT:
-                                if(room[y][x-1] != '1'){ // maintain dir
+                                if(room[y-1][x-2] != '1'){ // maintain dir
                                     x--;
                                     out_gate_last_x = 1;
                                     break;
                                 }
-                                if(room[y-1][x] != '1'){ // turn clock
+                                if(room[y-2][x-1] != '1'){ // turn clock
                                     direction = KEY_UP; 
                                     y--;
                                     out_gate_last_y = 1;
                                     break;
                                 }
-                                if(room[y+1][x] != '1'){ // turn o'clock
+                                if(room[y][x-1] != '1'){ // turn o'clock
                                     direction = KEY_DOWN; 
                                     y++;
                                     out_gate_last_y = -1;
                                     break;
                                 }
-                                if(room[y][x+1] != '1'){ // turn back
+                                if(room[y-1][x] != '1'){ // turn back
                                     direction = KEY_RIGHT; 
                                     x++;
                                     out_gate_last_x = -1;
@@ -560,6 +560,14 @@ void SnakeGame::input_wall(){ //update wall vector
     for(int i=1; i<ROOM_X-1; i++){ //input inside_wall
             for(int j=1; j<ROOM_Y-1; j++){
                 if(room[i][j] == '1'){
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
+                    walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
                     walls.insert(std::make_pair(std::make_pair(i+1,j+1), 4));
                 }
             }
