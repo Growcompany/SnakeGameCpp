@@ -573,12 +573,21 @@ void SnakeGame::new_wall() {
     int now_time = time(NULL);
 
     
-    if((now_time - new_wall_time) > 3){
+    if((now_time - new_wall_time) > 1 && new_wall_X < ROOM_X){
+        if(room[new_wall_X-1][new_wall_Y-1] == '1'){ // if snake or other item exist
+            new_wall_X += 2;
+            return;
+        }
+        if(room[new_wall_X-1][new_wall_Y-1] != ' '){ // if snake or other item exist
+            return;
+        }
+
         mvprintw(new_wall_X, new_wall_Y, "1");
         room[new_wall_X-1][new_wall_Y-1] = '1';
+        walls.insert(std::make_pair(std::make_pair(new_wall_X, new_wall_Y), 4));
         mvprintw(0, 0, "create new wall!!!!!! %d %d", new_wall_X-1, new_wall_Y-1);
         new_wall_time = now_time;
-        new_wall_X++;
+        new_wall_X += 2;
     }
 }
 
