@@ -1,62 +1,66 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#define MAP_X 23 // set room row size
-#define MAP_Y 30 // set room column size
+#define ROOM_X 23 // set room row size
+#define ROOM_Y 30 // set room column size
 #include <vector>
-extern char map[MAP_X][MAP_Y];
+#include <map>
+extern char room[ROOM_X][ROOM_Y];
 
 struct Point {
     int x, y;
 };
 
 struct items {
-    int x, y, time;
-};
-
-struct gateItems {
-    Point gate1, gate2;
-    int time;
-};
-
-struct GateItemInfo {
-    std::pair<int, int> gate1;
-    std::pair<int, int> gate2;
-};
-
-struct Gate {
-    Point entry;
-    Point exit;
+    int x, y, time, dir;
 };
 
 class SnakeGame {
 public:
     SnakeGame();
-    void Run();
+    bool Run(int stage, int *all_score);
 
 private:
-    void HandleInput();
+    void Initialize();
+    bool HandleInput();
     void Update();
-    bool IsCollision();
     void GrowthItem();
     void PoisonItem();
+    void D_GrowthItem();
     void GateItem();
     bool IsGameOver();
-    void Initialize();
-    void SetMap();
-    void PrintMap();
+    void Update_scoreboard();
+    void input_wall();
+    void new_wall();
 
     int width, height;
     std::vector<Point> snake;
     std::vector<items> Growth_items;
     std::vector<items> Poison_items;
-    std::vector<gateItems> Gate_items;
-    std::vector<Gate> gates;
+    std::vector<items> D_Growth_items;
+    std::vector<items> Gate_items;
+    std::map<std::pair<int,int>,int> walls;
     int direction;
     int Growth_time;
     int Poison_time;
+    int D_Growth_time;
     int Gate_time;
+    int Growth_cnt; // how much eat growth iteams
+    int Poison_cnt; // how much eat poison_items
+    int D_Growth_cnt;
+    bool nextstage;
     bool gameOver;
+    bool moving_gate;
+    bool enter_gate;
+    bool pass_gate;
+    bool first_gate;
+    int out_dir; //gate out_dir;
+    int out_gate_last_x;
+    int out_gate_last_y;
+    int score;
+    int new_wall_X;
+    int new_wall_Y;
+    int new_wall_time;
 };
 
 #endif
